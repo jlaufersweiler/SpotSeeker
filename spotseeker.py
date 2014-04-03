@@ -5,8 +5,6 @@
 # Author:      Jonathan Laufersweiler
 #
 # Created:     06/25/2013
-# Copyright:   (c) Charter Media 2013
-# Licence:     All rights reserved
 #-------------------------------------------------------------------------------
 #!/usr/bin/env python
 
@@ -38,8 +36,8 @@ slum='//172.18.112.215/PreEncode/FROM_OUTSIDE_FTP/Client/SLUMBERLAND/' #main Slu
 cent='//172.16.178.186/Catapult/Centaur/' #Centaur Catapult directory
 jvhd='//172.18.112.215/PreEncode/JAVELIN/HD/' #Javelin HD Repository
 jvsd='//172.18.112.215/PreEncode/JAVELIN/SD/' #Javelin SD Repository
-chmr='//172.16.178.186/Catapult/Corporate/Charter Media/' #Charter Marketing 'Corporate' Catapult directory SQ########
-evnt='//172.16.178.186/Catapult/Missouri/Event Networks/' #Charter Marketing 'PPV/VOD' Catapult Directory PPV### VOD#### etc
+chmr='//172.16.178.186/Catapult/Corporate/Broadcaster Media/' #Broadcaster Marketing 'Corporate' Catapult directory SQ########
+evnt='//172.16.178.186/Catapult/Missouri/Event Networks/' #Broadcaster Marketing 'PPV/VOD' Catapult Directory PPV### VOD#### etc
 genie='//172.16.178.186/Catapult/Georgia/Decatur/SpotGenie/' #Spot Genie Catapult repository
 
 #-----------------------------------
@@ -56,7 +54,7 @@ def findspot(row): #function to seek, copy and rename files
     if int(row.get('ULLENGTH'))>300: #EXCLUDE LONGFORM
         return retry
 
-    elif row.get('SZTAPEINFO').upper() in ['VOD NON ENCODE','VOD NO ENCODE','CHARTER.NET','NO ENCODE','NO ENCODE .NET','NO ENOCDE','DO NOT ENCODE','MAINSTREET','NO ENCOD E','NO ENCOD  E','DO NOT IMPORT','NON ENCODE','CNET - NO ENCODE','CNET NO ENCODE','DONE IN RENO']: #exclude things we don't encode
+    elif row.get('SZTAPEINFO').upper() in ['VOD NON ENCODE','VOD NO ENCODE','Broadcaster.NET','NO ENCODE','NO ENCODE .NET','NO ENOCDE','DO NOT ENCODE','MAINSTREET','NO ENCOD E','NO ENCOD  E','DO NOT IMPORT','NON ENCODE','CNET - NO ENCODE','CNET NO ENCODE','DONE IN RENO']: #exclude things we don't encode
         return retry
 
     elif row.get('SZCOMPANY').upper().strip().startswith('LFLA') or row.get('SZSPOT').startswith('2S'): #exclude the LA office
@@ -216,8 +214,8 @@ def findspot(row): #function to seek, copy and rename files
             except:
                 retry=True
 
-    elif ('CHARTER' in row.get('SZCOMPANY').upper() or 'RETRANS' in row.get('SZCOMPANY').upper() or 'REGIONAL MARKETING' in row.get('SZCOMPANY').upper()): #Charter Marketing spots
-        print('Charter Marketing hit')
+    elif ('Broadcaster' in row.get('SZCOMPANY').upper() or 'RETRANS' in row.get('SZCOMPANY').upper() or 'REGIONAL MARKETING' in row.get('SZCOMPANY').upper()): #Broadcaster Marketing spots
+        print('Broadcaster Marketing hit')
         spotID=row.get('SZSPOT')
         ISCII=row.get('SZSPOTTITLE')
         print(spotID)
@@ -231,7 +229,7 @@ def findspot(row): #function to seek, copy and rename files
                 prefix=ISCII
             if 'HD' in ISCII.upper():
                 try:
-                    try: #attempt to find .mpg version first, to avoid badly interlaced Charter Marketing spots
+                    try: #attempt to find .mpg version first, to avoid badly interlaced Broadcaster Marketing spots
                         shutil.copy2(glob.glob(''.join([chmr,prefix,'*.mpg']))[0].replace('\\','/'),''.join(['./',KMA,'/',spotID,'.mpg']))
                         hit.writerow(record)
                     except: # if no .mpg, look for .mov
@@ -242,7 +240,7 @@ def findspot(row): #function to seek, copy and rename files
             else:
                 try:
                     try: #find spots without 'HD' in the Eclipse entry, bu where there is an HD version in the repository
-                        try: #attempt to find .mpg version first, to avoid badly interlaced Charter Marketing spots
+                        try: #attempt to find .mpg version first, to avoid badly interlaced Broadcaster Marketing spots
                             shutil.copy2(glob.glob(''.join([chmr,prefix,'*HD.mpg']))[0].replace('\\','/'),''.join(['./',KMA,'/',spotID,'.mpg']))
                             hit.writerow(record)
                         except: # if no .mpg, look for .mov
@@ -250,7 +248,7 @@ def findspot(row): #function to seek, copy and rename files
                             hit.writerow(record)
                     except:
                         try:#There are HD movs that don have HD in the title. They will end up copied to the SD folder
-                            try: #attempt to find .mpg version first, to avoid badly interlaced Charter Marketing spots
+                            try: #attempt to find .mpg version first, to avoid badly interlaced Broadcaster Marketing spots
                                 shutil.copy2(glob.glob(''.join([chmr,prefix,'*.mpg']))[0].replace('\\','/'),''.join(['./',KMA,'/',spotID,'.mpg']))
                                 hit.writerow(record)
                             except: # if no .mpg, look for .mov
@@ -424,7 +422,7 @@ else: #if new reports found, begin processing
             elif '.127' in ReportInfo:# Sets Midwest/West division based on IP address on first line of Copy Report
                 KMA='MW'
                 smclist=os.listdir(smcat) #list superior marketing Catapult directory, only used in MW
-            elif '.22' in ReportInfo: # Sets Charter marketing National Fulfillment Center based on IP address on first line of Copy Report
+            elif '.22' in ReportInfo: # Sets Broadcaster marketing National Fulfillment Center based on IP address on first line of Copy Report
                 KMA='NFC'
             else: # East's Eclipse is 172.21.176.31, but I'm leaving it like this in case they move it without telling me.
                 KMA='E'
