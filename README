@@ -1,0 +1,8 @@
+SpotSeeker is a tool for automating the process of gathering up video files
+and renaming them with an id number from the traffic/scheduling database. 
+It recognizes clients and delivery methods that indicate that the file will 
+be named with an ISCI/AdID code or similarly unique identifier, and will be 
+stored in a known location on the network. When a matching spot successfully  
+copied, it writes that commercials record to a "found" CSV file. any other 
+records are written to a "seek" CSV for a human to search for manually.
+
